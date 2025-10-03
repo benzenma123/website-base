@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Cart - Ben Bell's Shop</title>
+<link href="style.css" rel="stylesheet">
+<style>
+/* Giữ style giống index */
+table { width:100%; border-collapse: collapse; margin-top:10px;}
+th, td { padding:8px; border:1px solid #ccc; text-align:center; font-size:14px;}
+th { background:#eee; }
+button { padding:4px 8px; cursor:pointer; font-size:12px; }
+.qty-btn { padding:2px 6px; margin:0 2px; font-size:12px; }
+.total { font-weight:bold; text-align:right; margin-top:10px;}
+input,textarea { width:100%; padding:6px; margin-top:4px; border-radius:4px; border:1px solid #ccc;}
+input[type="submit"] { margin-top:10px; background:#28a745; color:#fff; border:none; cursor:pointer; font-size:14px; }
+input[type="submit"]:hover { background:#218838; }
+</style>
+</head>
+<body>
+<h1>Your Cart</h1>
+<table id="cart-table">
+<thead><tr><th>Product</th><th>Price</th><th>Qty</th><th>Total</th><th>Action</th></tr></thead>
+<tbody></tbody>
+</table>
+<div class="total" id="cart-total">Total: $0</div>
+
+<h2>Checkout</h2>
+<form id="checkout-form">
+<label for="name">Full Name</label>
+<input type="text" id="name" required>
+<label for="email">Email</label>
+<input type="email" id="email" required>
+<label for="note">Note For Shop</label>
+<textarea id="note" rows="3" placeholder="Any special instructions..."></textarea>
+<input type="submit" value="Place Order">
+<label for="code">Sale Code</label>
+<input type="code" id="code" optional>
+<textarea id="code" rows="3" placeholder="Type Special Code From Discord..... (ex: benbellshop)"></textarea>
+</form>
+
+<script>
+let cart=JSON.parse(localStorage.getItem("cart"))||[];
+const tableBody=document.querySelector("#cart-table tbody");
+const cartTotal=document.getElementById("cart-total");
+
+function renderCart(){
+  tableBody.innerHTML="";
+  let total=0;
+  cart.forEach((item,index)=>{
+    const itemTotal=item.price*item.quantity;
+    total+=itemTotal;
+    const row=document.createElement("tr");
+    row.innerHTML=`
+      <td>${item.name}</td>
+      <td>$${item.price.toFixed(2)}</td>
+      <td>
+        <button class="qty-btn" onclick="decreaseQty(${index})">-</button>
+        ${item.quantity}
+        <button class="qty-btn" onclick="increaseQty(${index})">+</button>
+      </td>
+      <td>$${itemTotal.toFixed(2)}</td>
+      <td><button onclick="removeItem(${index})">Remove</button></td>
+    `;
+    tableBody.appendChild(row);
+  });
+  cartTotal.textContent="Total: $"+total.toFixed(2);
+  localStorage.setItem("cart",JSON.stringify(cart));
+}
+
+function removeItem(index){ cart.splice(index,1); renderCart(); }
+function increaseQty(index){ cart[index].quantity+=1; renderCart(); }
+function decreaseQty(index){ if(cart[index].quantity>1){cart[index].quantity-=1}else{cart.splice(index,1);} renderCart(); }
+
+document.getElementById("checkout-form").addEventListener("submit",function(e){
+  e.preventDefault();
+  if(cart.length===0){ alert("Your cart is empty!"); return; }
+  const order={
+    customerName: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    note: document.getElementById("note").value,
+    cart: cart,
+    total: cart.reduce((sum,item)=>sum+item.price*item.quantity,0)
+  };
+  console.log("Order placed:",order);
+  alert("Thank you! Your order has been placed.");
+  cart=[];
+  renderCart();
+  this.reset();
+});
+
+renderCart();
+</script>
+</body>
+</html>
