@@ -5,3 +5,4 @@
 3. If you pirating my project then lawsuit will get into this
 
 ###THANK YOU FOR READING THIS###
+Before you testing my project, please type "python -m http.server 8000" in your terminal (install python is required) and type "localhost:8000" in your browser will give you the best experience when tryout my project
