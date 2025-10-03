@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>My Online Shop</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Cart Icon */
+    #cart-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      z-index: 100;
+    }
+    #cart-icon img { width: 100%; height: 100%; }
+    #cart-count {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: red;
+      color: #fff;
+      border-radius: 50%;
+      padding: 2px 6px;
+      font-size: 14px;
+    }
+
+    /* Bounce animation */
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-15px); }
+    }
+    .bounce { animation: bounce 0.3s; }
+
+    /* Fly image animation */
+    .fly-img {
+      position: fixed;
+      width: 60px;
+      height: 60px;
+      pointer-events: none;
+      transition: transform 0.8s cubic-bezier(0.65,0,0.35,1);
+      z-index: 500;
+      border-radius: 8px;
+    }
+
+    /* Cart Popup */
+    #cart-popup {
+      display: none;
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      width: 400px;
+      max-height: 80vh;
+      overflow-y: auto;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      padding: 20px;
+      z-index: 200;
+      transform: translateY(-20px);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    #cart-popup.show { display: block; transform: translateY(0); opacity: 1; }
+    #cart-popup h2 { text-align: center; margin-top: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 8px; border: 1px solid #ccc; text-align: center; font-size: 14px; }
+    th { background: #eee; }
+    button { padding: 4px 8px; cursor: pointer; font-size: 12px; }
+    .total { font-weight: bold; text-align: right; margin-top: 10px; }
+    form { margin-top: 15px; }
+    label { display: block; margin-top: 10px; font-weight: bold; font-size: 14px; }
+    input, textarea { width: 100%; padding: 6px; margin-top: 4px; border-radius: 4px; border: 1px solid #ccc; font-size: 14px; }
+    input[type="submit"] { margin-top: 10px; background: #28a745; color: #fff; border: none; cursor: pointer; font-size: 14px; }
+    input[type="submit"]:hover { background: #218838; }
+    .qty-btn { padding: 2px 6px; margin: 0 2px; font-size: 12px; }
+    #continue-btn { margin-top: 10px; padding: 6px 10px; cursor: pointer; }
+    #go-cart-btn { margin-top: 10px; padding: 6px 10px; cursor: pointer; background:#007bff; color:#fff; border:none; border-radius:4px; }
+    #go-cart-btn:hover { background:#0056b3; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <strong>My Online Shop</strong>
+      <nav>
+        <a href="#hero">Home</a>
+        <a href="#products">Products</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Rickroll audio -->
+  <audio id="rickroll-audio" src="https://www.myinstants.com/media/sounds/rickroll.mp3"></audio>
+
+  <!-- Cart Icon -->
+  <div id="cart-icon">
+    <img src="https://media.tenor.com/S61VCO73mOAAAAAj/linux-tux.gif" alt="Cart Icon">
+    <span id="cart-count">0</span>
+  </div>
+
+  <!-- Cart Popup -->
+  <div id="cart-popup">
+    <h2>Your Cart</h2>
+    <table id="cart-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Price</th>
+          <th>Qty</th>
+          <th>Total</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="total" id="cart-total">Total: $0</div>
+
+    <h3>Checkout</h3>
+    <form id="checkout-form">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" required>
+      <label for="note">Note For Shop</label>
+      <textarea id="note" rows="3" placeholder="Any special instructions..."></textarea>
+      <label for="code">Sale Code</label>
+      <textarea id="code" rows="3" placeholder="Type Special Code From Discord..... (ex: benbellshop)"></textarea>
+      <input type="submit" value="Place Order">
+    </form>
+
+    <button id="continue-btn">Continue Shopping</button>
+    <a href="cart.html"><button id="go-cart-btn">Go to Cart Page</button></a>
+  </div>
+
+  <main class="container">
+    
+    <section class="hero" id="hero">
+      <h1>Welcome to My Online Shop</h1>
+      <p>Find The Best PC Product For Your Gaming PC!</p>
+      <p><small>**This shop is the cheapest shop in the town**</small></p>
+      <p><small><small><small>Use code: (type your own in here) For 200$ sale</small></small></small></p>
+    </section>
+
+    <section id="products">
+      <h2>Featured Products</h2>
+      <div class="grid" id="products-grid">
+        <!-- 12 products -->
+        <article class="card">
+          <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7ras8-md408gv549lo2c@resize_w450_nl.webp" alt="Hoco W35 Max V5.3" />
+          <h3>Hoco W35 Max V5.3</h3>
+          <p class="price">$59.99</p>
+          <a href="#" class="btn add-to-cart" data-name="Hoco W35 Max V5.3" data-price="59.99">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://product.hstatic.net/200000525189/product/apple-watch-s9-41mm-vien-nhom-day-silicone-1_edd599a5bb67406db06620ee14d21557.jpg" alt="Apple Watch Pro 2025" />
+          <h3>Apple Watch Pro 2025</h3>
+          <p class="price">$339.99</p>
+          <a href="#" class="btn add-to-cart" data-name="Apple Watch Pro 2025" data-price="339.99">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://bizweb.dktcdn.net/thumb/grande/100/512/769/products/asus-rog-strix-g15-3.webp?v=1718683858457" alt="Asus Rog Strix G15" />
+          <h3>Asus Rog Strix G15</h3>
+          <p class="price">$1600.99</p>
+          <a href="#" class="btn add-to-cart" data-name="Asus Rog Strix G15" data-price="1600.99">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://owlgaming.vn/wp-content/uploads/2020/10/AKKO-3087-World-Tour-Tokyo-Akko-sw.jpg" alt="AKKO 3087 v2 World Tour Tokyo" />
+          <h3>AKKO 3087 v2 World Tour Tokyo (Akko sw v2) Keyboard</h3>
+          <p class="price">$125.99</p>
+          <a href="#" class="btn add-to-cart" data-name="AKKO 3087 v2 World Tour Tokyo (Akko sw v2) Keyboard" data-price="125.99">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://vn.jbl.com/dw/image/v2/AAUJ_PRD/on/demandware.static/-/Sites-masterCatalog_Harman/default/dw814ba878/JBL_PARTYBOX_520_HERO_0031_x1.jpg?sw=270&sh=330&sm=fit&sfrm=png" alt="JBL Bluetooth Speaker" />
+          <h3>JBL Bluetooth Speaker</h3>
+          <p class="price">$700</p>
+          <a href="#" class="btn add-to-cart" data-name="JBL Bluetooth Speaker" data-price="700">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://cdn-dynmedia-1.microsoft.com/is/image/microsoftcorp/Samsung-49-CHG90-QLED-Gaming-Monitor-Highlight-3000x1682:VP2-859x540" alt="Samsung 49inch CHG90 QLED Gaming Monitor" />
+          <h3>Samsung 49" CHG90 QLED Gaming Monitor</h3>
+          <p class="price">$300</p>
+          <a href="#" class="btn add-to-cart" data-name="Samsung 49inch CHG90 QLED Gaming Monitor" data-price="300">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://dlcdnwebimgs.asus.com/gain/64c122cf-1bab-4bac-aa97-591e1573dd29/" alt="TUF GAMING X870-PLUS WIFI" />
+          <h3>TUF GAMING X870-PLUS WIFI</h3>
+          <p class="price">$600</p>
+          <a href="#" class="btn add-to-cart" data-name="TUF GAMING X870-PLUS WIFI" data-price="600">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://product.hstatic.net/200000921511/product/bpstore-vga-zotac-gaming-geforce-rtx-5090-solid__1__fe48418fa6c04eb792cba6973be1810a.jpg" alt="VGA ZOTAC GAMING GeForce RTX 5090 SOLID" />
+          <h3>VGA ZOTAC GAMING GeForce RTX 5090 SOLID</h3>
+          <p class="price">$5500</p>
+          <a href="#" class="btn add-to-cart" data-name="VGA ZOTAC GAMING GeForce RTX 5090 SOLID" data-price="5500">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://m.media-amazon.com/images/I/61Mk3YqYHpL.jpg" alt="Wireless Gaming Mouse" />
+          <h3>Wireless Gaming Mouse Bluetooth Mouse RGB Rechargeable</h3>
+          <p class="price">$34.99</p>
+          <a href="#" class="btn add-to-cart" data-name="Wireless Gaming Mouse Bluetooth Mouse RGB Rechargeable" data-price="34.99">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://vanphongphamminaco.com/wp-content/uploads/2023/07/USB-Kingston-8gb.webp" alt="USB Flash Drive Kingston 400TB" />
+          <h3>USB Flash Drive Kingston 400TB</h3>
+          <p class="price">$3000</p>
+          <a href="#" class="btn add-to-cart" data-name="USB Flash Drive Kingston 400TB" data-price="3000">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://tanthanhpc.vn/wp-content/uploads/2023/04/PC-Gaming-TX22-%E2%80%93-i5-7400.jpg" alt="PC Gaming TX22" />
+          <h3>PC Gaming TX22 – i5 7400 | Ram 16G | SSD 256G | RX570 8GB</h3>
+          <p class="price">$1700</p>
+          <a href="#" class="btn add-to-cart" data-name="PC Gaming TX22 – i5 7400 | Ram 16G | SSD 256G | RX570 8GB" data-price="1700">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://media.tenor.com/S61VCO73mOAAAAAj/linux-tux.gif" alt="Linux Activation Key" />
+          <h3>Linux Activation Key</h3>
+          <p class="price">free</p>
+          <a href="#" class="btn add-to-cart" data-name="Linux Activation Key" data-price="0">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://hoanghapccdn.com/media/product/4514_ai_deep_learning_lianli.jpg" alt="AI-Deep Learning THREADRIPPER PRO 5975WX | 256GB | Dual RTX 4090 24G" />
+          <h3>AI-Deep Learning THREADRIPPER PRO 5975WX | 256GB | Dual RTX 4090 24G</h3>
+          <p class="price">$9000</p>
+          <a href="#" class="btn add-to-cart" data-name="AI-Deep Learning THREADRIPPER PRO 5975WX | 256GB | Dual RTX 4090 24G" data-price="9000">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://product.hstatic.net/200000837185/product/glenovolegion916irx883ag0047vn_2248904420604985ab1552c0531abdb5_master_240874f4c6ec4dcc87adad242b88674b_master.jpg" alt="Lenovo Legion LOQ 2025 RTX 5070 Ti" />
+          <h3>Lenovo Legion LOQ 2025 RTX 5070 Ti</h3>
+          <p class="price">$1799.99</p>
+          <a href="#" class="btn add-to-cart" data-name="Lenovo Legion LOQ 2025 RTX 5070 Ti" data-price="1799.99">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://bitcodes.co/wp-content/uploads/2024/11/1.png" alt="Windows 11 Pro Key" />
+          <h3>Windows 11 Pro Key</h3>
+          <p class="price">$79.99</p>
+          <a href="#" class="btn add-to-cart" data-name="Windows 11 Pro Key" data-price="79.99">Add to Cart</a>
+        </article>
+        <article class="card">
+          <img src="https://www.amd.com/content/dam/amd/en/images/products/processors/3513563-threadripper-pro-9000-series.jpg" alt="AMD Ryzen™ Threadripper™ PRO 9995WX" />
+          <h3>AMD Ryzen™ Threadripper™ PRO 9995WX</h3>
+          <p class="price">$11,500.99</p>
+          <a href="#" class="btn add-to-cart" data-name="AMD Ryzen™ Threadripper™ PRO 9995WX" data-price="11500.99">Add to Cart</a>
+          <p><small>This Product Is Limited Due To Limited Edition Of It So It Likely To Out Of Stock Very Quickly</small></p>
+        </article>
+        <article class="card">
+          <img src="https://cdn11.bigcommerce.com/s-pywjnxrcr2/images/stencil/original/image-manager/lemurpro-sectionlifestyle-teaser-lemp-mobile-pop.png?t=1727465416" alt="System76 Linux Laptop" />
+          <h3>System76 Linux Laptop</h3>
+          <p class="price">$670.99</p>
+          <a href="#" class="btn add-to-cart" data-name="System76 Linux Laptop" data-price="670.99">Add to Cart</a>
+          <p><small>You can request me to install any OS you want and change component if possible</small></p>
+        </article>
+      </div>
+    </section>
+
+    <section class="contact" id="contact">
+      <h2>Contact Us</h2>
+      <p>Email: example@gmail.com</p>
+      <p>Phone: +1 (360) 123-4567</p>
+      <p>Social Media: (type your in here)</p>
+    </section>
+  </main>
+
+  <footer>© 2025 Copyright Ben's Studio </footer>
+  <footer>If you modified or using this code for yourself, it consider as pirating and can getting lawsuit into this</footer>
+  <audio id="outro-audio" src="b.mp3" preload="auto"></audio>
+<script>
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  const cartCount = document.getElementById("cart-count");
+  const tableBody = document.querySelector("#cart-table tbody");
+  const cartTotal = document.getElementById("cart-total");
+  const cartPopup = document.getElementById("cart-popup");
+  const cartIcon = document.getElementById("cart-icon");
+  const audio = document.getElementById("rickroll-audio");
+  const outroAudio = document.getElementById("outro-audio");
+
+  function renderCart(){
+    tableBody.innerHTML = "";
+    let total = 0;
+    cart.forEach((item,index)=>{
+      const itemTotal = item.price*item.quantity;
+      total += itemTotal;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${item.name}</td>
+        <td>$${item.price}</td>
+        <td>
+          <button class="qty-btn" onclick="changeQty(${index},-1)">-</button>
+          ${item.quantity}
+          <button class="qty-btn" onclick="changeQty(${index},1)">+</button>
+        </td>
+        <td>$${itemTotal.toFixed(2)}</td>
+        <td><button onclick="removeItem(${index})">Remove</button></td>
+      `;
+      tableBody.appendChild(row);
+    });
+    cartTotal.textContent = "Total: $" + total.toFixed(2);
+    cartCount.textContent = cart.reduce((a,b)=>a+b.quantity,0);
+    localStorage.setItem("cart",JSON.stringify(cart));
+  }
+
+  function changeQty(index, delta){
+    cart[index].quantity += delta;
+    if(cart[index].quantity<1) cart[index].quantity=1;
+    renderCart();
+}
+
+
+  function removeItem(index){
+    cart.splice(index,1);
+    renderCart();
+}
+
+  cartIcon.addEventListener("click",()=>{
+    cartPopup.classList.toggle("show");
+    cartIcon.classList.add("bounce");
+    setTimeout(()=>cartIcon.classList.remove("bounce"),300);
+  });
+
+  document.querySelectorAll(".add-to-cart").forEach(btn=>{
+    btn.addEventListener("click",e=>{
+      e.preventDefault();
+      const name = btn.dataset.name;
+      const price = parseFloat(btn.dataset.price);
+      const existing = cart.find(i=>i.name===name);
+      if(existing) existing.quantity++;
+      else cart.push({name,price,quantity:1});
+      renderCart();
+      // fly image
+      const img = btn.closest(".card").querySelector("img");
+      const flyImg = img.cloneNode();
+      flyImg.className="fly-img";
+      document.body.appendChild(flyImg);
+      const rect = img.getBoundingClientRect();
+      flyImg.style.left=rect.left+"px";
+      flyImg.style.top=rect.top+"px";
+      const cartRect = cartIcon.getBoundingClientRect();
+      setTimeout(()=>{flyImg.style.transform=`translate(${cartRect.left-rect.left}px,${cartRect.top-rect.top}px) scale(0.2)`},10);
+      setTimeout(()=>flyImg.remove(),800);
+      audio.play();
+    });
+  });
+
+  document.getElementById("continue-btn").addEventListener("click",()=>cartPopup.classList.remove("show"));
+  cartPopup.classList.remove("show");
+
+  // Khi checkout
+  document.getElementById("checkout-form").addEventListener("submit",e=>{
+    e.preventDefault();
+    alert("Order Placed!!! Thank you " + document.getElementById("name").value);
+
+    cart=[];
+    renderCart();
+    cartPopup.classList.remove("show");
+
+    // Reset nhạc về 57s rồi play
+    outroAudio.pause();
+    outroAudio.currentTime = 57;
+
+    if (outroAudio.readyState > 0) {
+      outroAudio.play();
+    } else {
+      outroAudio.addEventListener("loadedmetadata", () => {
+        outroAudio.currentTime = 57;
+        outroAudio.play();
+      }, { once: true });
+    }
+
+    // Tự dừng sau 15s
+    setTimeout(() => {
+      outroAudio.pause();
+      outroAudio.currentTime = 57;
+    }, 30000);
+  });
+
+  renderCart();
+</script>
