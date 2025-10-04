@@ -7,3 +7,9 @@
 ###THANK YOU FOR READING THIS###
 
 Before you testing my project, please type "python -m http.server 8000" in your terminal (install python is required) and type "localhost:8000" in your browser will give you the best experience when tryout my project
+
+Arch Linux:
+sudo pacman -S python python3
+
+Ubuntu/Debian:
+sudo apt install -S python
