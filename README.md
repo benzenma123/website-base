@@ -13,3 +13,6 @@ sudo pacman -S python python3
 
 Ubuntu/Debian:
 sudo apt install -S python
+
+Other Linux:
+(I dunno :) )
