@@ -14,5 +14,15 @@ sudo pacman -S python python3
 Ubuntu/Debian:
 sudo apt install -S python
 
+Gentoo Linux:
+sudo emerge --ask python (or python3)
+
+Windows:
+https://www.python.org/ftp/python/3.14.0/python-3.14.0-amd64.exe (use this link to install the python)
+second method: winget install python (if avalible idk)
+
+MacOS:
+sudo brew install python 
+
 Other Linux:
-(I dunno :) )
+install with your desired package manager
